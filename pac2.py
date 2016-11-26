@@ -14,7 +14,7 @@ Green = (0, 255, 0)
 Blue = (0, 0, 255)
 Football_Green = (50, 180, 50)
 
-
+'''
 def load_png(name):
 	""" Load image and return image object"""
 	fullname = os.path.join('data', name)
@@ -47,14 +47,13 @@ class Helmet(pygame.sprite.Sprite):
 	def calcnewpos(self,rect,vector):
 		(angle,z) = vector
 		(dx,dy) = (z*math.cos(angle),z*math.sin(angle))
-		return rect.move(dx,dy)
+		return rect.move(dx,dy)'''
 
 def main():
 	# Initialise screen
 	pygame.init()
-	screen = pygame.display.set_mode((1200, 800))
+	screen = pygame.display.set_mode((1200, 750))
 	pygame.display.set_caption('Michigan Pacman Game')
-	helmet = Helmet()
 
 	# Fill background
 	background = pygame.Surface(screen.get_size())
@@ -66,8 +65,19 @@ def main():
 	score = 0
 	score_text = font.render("Score: " + str(score), 1, Red)
 	textpos = score_text.get_rect()
-	textpos.centerx = background.get_rect().centerx
+	textpos.bottomleft = background.get_rect().bottomleft
 	background.blit(score_text, textpos)
+
+	lives = 0
+	lives_text = font.render("Lives: " + str(lives), 1, Red)
+	textpos = lives_text.get_rect()
+	textpos.bottomright = background.get_rect().bottomright
+	background.blit(lives_text, textpos)
+
+	lives_text = font.render("MICHIGAN PACMAN", 1, Blue)
+	textpos = lives_text.get_rect()
+	textpos.midbottom = background.get_rect().midbottom
+	background.blit(lives_text, textpos)
 
 	# Blit everything to the screen
 	screen.blit(background, (0, 0))
