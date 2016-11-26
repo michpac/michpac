@@ -13,6 +13,7 @@ Red = (255, 0, 0)
 Green = (0, 255, 0)
 Blue = (0, 0, 255)
 Football_Green = (50, 180, 50)
+clock = pygame.time.Clock()
 
 '''
 def load_png(name):
@@ -32,7 +33,6 @@ def load_png(name):
 
 class Helmet(pygame.sprite.Sprite):
 	"""Main pacman that is the helmet"""
-
 	def __init__(self, vector):
 		pygame.sprite.Sprite.__init__(self)
 		self.image, self.rect = load_png('Michigan.png')
@@ -47,7 +47,12 @@ class Helmet(pygame.sprite.Sprite):
 	def calcnewpos(self,rect,vector):
 		(angle,z) = vector
 		(dx,dy) = (z*math.cos(angle),z*math.sin(angle))
-		return rect.move(dx,dy)'''
+		return rect.move(dx,dy)
+
+
+Michigan=pygame.image.load('Michigan.png')
+pygame.display.set_icon(Michigan)
+'''
 
 def main():
 	# Initialise screen
@@ -74,6 +79,7 @@ def main():
 	textpos.bottomright = background.get_rect().bottomright
 	background.blit(lives_text, textpos)
 
+	font = pygame.font.Font(None, 80)
 	lives_text = font.render("MICHIGAN PACMAN", 1, Blue)
 	textpos = lives_text.get_rect()
 	textpos.midbottom = background.get_rect().midbottom
@@ -91,7 +97,27 @@ def main():
 				return
 		screen.blit(background, (0, 0))
 		pygame.display.flip()
-
-
+		x_pos = 0
+		y_pos = 0
+		x_delta = 0
+		y_delta = 0
+		if event.type == pygame.KEYDOWN:
+			x_delta=0;
+			y_delta=0;
+			if event.key == pygame.K_LEFT:
+				x_delta -= 10
+			if event.key == pygame.K_RIGHT:
+				x_delta += 10
+			if event.key == pygame.K_UP:
+				y_delta -= 10
+			if event.key == pygame.K_DOWN:
+				y_delta += 10
+		x_pos += x_delta
+		y_pos += y_delta
+		screen.blit(background, (0, 0))
+		pygame.display.flip()
+		screen.fill(Blue, rect=[x_pos,y_pos, 20,20])
+		pygame.display.update()		
+		clock.tick(60)
 
 if __name__ == '__main__': main()

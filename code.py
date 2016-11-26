@@ -40,7 +40,6 @@ def load_png(name):
         	raise SystemExit(message)
 	return image, image.get_rect()
 
-helmet = load_png('Michigan.png')
 
 gameExit = False
 while not gameExit:
@@ -64,7 +63,7 @@ while not gameExit:
 	
 	x_pos +=x_delta
 	y_pos +=y_delta
-	gameDisplay.fill(helmet)
+	gameDisplay.fill(helmet, rect=[x_pos,y_pos, 20,20])
 	pygame.display.update()		
 	clock.tick()
 
