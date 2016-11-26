@@ -173,11 +173,11 @@ class game ():
                 return scoresurf
                 
         def drawmidgamehiscores(self):
-                """Redraw the high-score list image after pacman dies."""
-                self.imHiscores=self.makehiscorelist()
+        	"""Redraw the high-score list image after pacman dies."""
+        	self.imHiscores=self.makehiscorelist()
 
 	def __init__ (self):
-		self.levelNum = 0
+                self.levelNum = 0
 		self.score = 0
 		self.lives = 3
 		
