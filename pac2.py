@@ -15,50 +15,66 @@ Blue = (0, 0, 255)
 Football_Green = (50, 180, 50)
 clock = pygame.time.Clock()
 
-'''
-def load_png(name):
+
+def load_png(name): #this was taken from pygame website on loading pngs
 	""" Load image and return image object"""
 	fullname = os.path.join('data', name)
 	try:
 		image = pygame.image.load(fullname)
-		if image.get_alpha() is None:
+		if image.get_alpha is None:
 			image = image.convert()
 		else:
 			image = image.convert_alpha()
 	except pygame.error as message:
-        	print ('Cannot load image:'), fullname
-        	raise SystemExit(message)
+		print ('Cannot load image:' + fullname)
+		raise SystemExit
 	return image, image.get_rect()
-
 
 class Helmet(pygame.sprite.Sprite):
 	"""Main pacman that is the helmet"""
-	def __init__(self, vector):
+	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		self.image, self.rect = load_png('Michigan.png')
+		#self.image, self.rect = (blue, rect=[x_pos,y_pos, 20,20])
 		screen = pygame.display.get_surface()
 		self.area = screen.get_rect()
-		self.vector = vector
+		self.speed = 10
+		self.state = "still"
+		self.reinit()
+
+	def reinit(self):
+		self.state = "still"
+		self.movepos = [0,0]
 
 	def update(self):
-		newpos = self.calcnewpos(self.rect,self.vector)
-		self.rect = newpos
+		newpos = self.rect.move(self.movepos)
+		if self.area.contains(newpos):
+			self.rect = newpos
+		pygame.event.pump()
 
-	def calcnewpos(self,rect,vector):
-		(angle,z) = vector
-		(dx,dy) = (z*math.cos(angle),z*math.sin(angle))
-		return rect.move(dx,dy)
+	def moveleft(self):
+		self.movepos[0] = self.movepos[0] - (self.speed)
+		self.state = "move left"
 
+	def moveright(self):
+		self.movepos[0] = self.movepos[0] + (self.speed)
+		self.state = "move right"
 
-Michigan=pygame.image.load('Michigan.png')
-pygame.display.set_icon(Michigan)
-'''
+	def moveup(self):
+		self.movepos[1] = self.movepos[1] - (self.speed)
+		self.state = "moveup"
+
+	def movedown(self):
+		self.movepos[1] = self.movepos[1] + (self.speed)
+		self.state = "movedown"
 
 def main():
 	# Initialise screen
 	pygame.init()
 	screen = pygame.display.set_mode((1200, 750))
 	pygame.display.set_caption('Michigan Pacman Game')
+	helmet = Helmet()
+
 
 	# Fill background
 	background = pygame.Surface(screen.get_size())
@@ -116,7 +132,7 @@ def main():
 		y_pos += y_delta
 		screen.blit(background, (0, 0))
 		pygame.display.flip()
-		screen.fill(Blue, rect=[x_pos,y_pos, 20,20])
+		screen.fill(helmet, rect=[x_pos,y_pos, 20,20])
 		pygame.display.update()		
 		clock.tick(60)
 
