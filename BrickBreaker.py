@@ -23,7 +23,7 @@ y_delta = 0
 
 wallx = 100
 wally = 100
-
+##
 
 class Helmet(pygame.sprite.Sprite):
 	"""Main pacman that is the helmet"""
