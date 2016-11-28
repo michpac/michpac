@@ -73,8 +73,9 @@ def main():
 	pygame.init()
 	screen = pygame.display.set_mode((1200, 750))
 	pygame.display.set_caption('Michigan Pacman Game')
-	helmet = Helmet()
 
+	global helmet
+	helmet = Helmet()
 
 	# Fill background
 	background = pygame.Surface(screen.get_size())
@@ -101,39 +102,38 @@ def main():
 	textpos.midbottom = background.get_rect().midbottom
 	background.blit(lives_text, textpos)
 
+	helmetsprite = pygame.sprite.RenderPlain(helmet)
+
 	# Blit everything to the screen
 	screen.blit(background, (0, 0))
 	pygame.display.flip()
 
 
 	# Event loop
-	while 1:
-		for event in pygame.event.get():
-			if event.type == QUIT:
-				return
-		screen.blit(background, (0, 0))
-		pygame.display.flip()
-		x_pos = 0
-		y_pos = 0
-		x_delta = 0
-		y_delta = 0
-		if event.type == pygame.KEYDOWN:
-			x_delta=0;
-			y_delta=0;
-			if event.key == pygame.K_LEFT:
-				x_delta -= 10
-			if event.key == pygame.K_RIGHT:
-				x_delta += 10
-			if event.key == pygame.K_UP:
-				y_delta -= 10
-			if event.key == pygame.K_DOWN:
-				y_delta += 10
-		x_pos += x_delta
-		y_pos += y_delta
-		screen.blit(background, (0, 0))
-		pygame.display.flip()
-		screen.fill(helmet, rect=[x_pos,y_pos, 20,20])
-		pygame.display.update()		
+	gameExit = False
+	while not gameExit:
+		# Make sure game doesn't run at more than 60 frames per second
 		clock.tick(60)
 
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				gameExit = True
+			elif event.type == KEYDOWN:
+				if event.key == pygame.K_RIGHT:
+					paddle.moveright()
+				if event.key == pygame.K_LEFT:
+					paddle.moveleft()
+			elif event.type == KEYUP:
+				if event.key == K_RIGHT or event.key == K_LEFT:
+					paddle.movepos = [0,0]
+					paddle.state = "still"
+
+		screen.blit(background, helmet.rect, helmet.rect)
+		helmetsprite.update()
+		helmetsprite.draw(screen)
+		pygame.display.flip()
+	pygame.quit()
+	quit()	
+
 if __name__ == '__main__': main()
+
