@@ -21,6 +21,11 @@ y_pos = 0
 x_delta = 0
 y_delta = 0
 
+#plays music
+# pygame.mixer.music.load('pacman.wav')
+# pygame.mixer.music.play(5)        
+# pygame.mixer.music.queue('pacman.wav')
+
 def load_png(name): #this was taken from pygame website on loading pngs
 	""" Load image and return image object"""
 	fullname = os.path.join('data', name)
@@ -39,7 +44,8 @@ class Helmet(pygame.sprite.Sprite):
 	"""Main pacman that is the helmet"""
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
-		self.image, self.rect = load_png('Michigan.png')
+		self.image = pygame.image.load('Michigan2.bmp')
+		self.rect = self.image.get_rect()
 		#self.image, self.rect = (blue, rect=[x_pos,y_pos, 20,20])
 		screen = pygame.display.get_surface()
 		self.area = screen.get_rect()
@@ -128,11 +134,11 @@ def main():
 	pygame.display.set_caption('Michigan Pacman Game')
 
 	global helmet
-	global wall
-	global ghost
+	# global wall
+	# global ghost
 	helmet = Helmet()
-	wall = Wall()
-	ghost = Ghost()
+	# wall = Wall()
+	# ghost = Ghost()
 
 	# Fill background
 	background = pygame.Surface(screen.get_size())
@@ -192,12 +198,12 @@ def main():
 					helmet.state = "still"
 
 		screen.blit(background, helmet.rect, helmet.rect)
-		screen.blit(background, wall.rect, wall.rect)
-		screen.blit(background, ghost.rect, ghost.rect)
+		#screen.blit(background, wall.rect, wall.rect)
+		#screen.blit(background, ghost.rect, ghost.rect)
 		helmetsprite.update()
-		ghostsprite.update()
+		#ghostsprite.update()
 		helmetsprite.draw(screen)
-		ghostsprite.draw(screen)
+		#ghostsprite.draw(screen)
 		pygame.display.flip()
 	pygame.quit()
 	quit()	
