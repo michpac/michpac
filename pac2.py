@@ -6,7 +6,7 @@ import os
 import getopt
 from pygame.locals import *
 from socket import *
-##
+
 White = (255,255,255)
 Black = (0,0,0)
 Red = (255, 0, 0)
@@ -15,6 +15,11 @@ Blue = (0, 0, 255)
 Football_Green = (50, 180, 50)
 clock = pygame.time.Clock()
 
+#original positions
+x_pos = 0
+y_pos = 0
+x_delta = 0
+y_delta = 0
 
 def load_png(name): #this was taken from pygame website on loading pngs
 	""" Load image and return image object"""
@@ -44,7 +49,7 @@ class Helmet(pygame.sprite.Sprite):
 
 	def reinit(self):
 		self.state = "still"
-		self.movepos = [0,0]
+		self.movepos = [600,575]
 
 	def update(self):
 		newpos = self.rect.move(self.movepos)
@@ -67,6 +72,54 @@ class Helmet(pygame.sprite.Sprite):
 	def movedown(self):
 		self.movepos[1] = self.movepos[1] + (self.speed)
 		self.state = "movedown"
+'''
+class Wall(pygame.sprite.Sprite):
+	"""Setting up walls"""
+	def __init__(self):
+		pygame.sprite.Sprite.__init__(self)
+		self.image, self.rect = load_png('WallA.png')
+		screen = pygame.display.get_surface()
+		self.area = screen.get_rect()
+		self.state = "still"
+		self.pos = [100,100]
+'''
+'''class Ghost(pygame.sprite.Sprite):
+	"""Main pacman that is the helmet"""
+	def __init__(self):
+		pygame.sprite.Sprite.__init__(self)
+		self.image, self.rect = load_png('NotreDameHelmet.png')
+		#self.image, self.rect = (blue, rect=[x_pos,y_pos, 20,20])
+		screen = pygame.display.get_surface()
+		self.area = screen.get_rect()
+		self.speed = 10
+		self.state = "still"
+		self.reinit()
+
+	def reinit(self):
+		self.state = "still"
+		self.movepos = [600,450]
+
+	def update(self):
+		newpos = self.rect.move(self.movepos)
+		if self.area.contains(newpos):
+			self.rect = newpos
+		pygame.event.pump()
+
+	def moveleft(self):
+		self.movepos[0] = self.movepos[0] - (self.speed)
+		self.state = "move left"
+
+	def moveright(self):
+		self.movepos[0] = self.movepos[0] + (self.speed)
+		self.state = "move right"
+
+	def moveup(self):
+		self.movepos[1] = self.movepos[1] - (self.speed)
+		self.state = "moveup"
+
+	def movedown(self):
+		self.movepos[1] = self.movepos[1] + (self.speed)
+		self.state = "movedown"'''
 
 def main():
 	# Initialise screen
@@ -75,7 +128,11 @@ def main():
 	pygame.display.set_caption('Michigan Pacman Game')
 
 	global helmet
+	global wall
+	global ghost
 	helmet = Helmet()
+	wall = Wall()
+	ghost = Ghost()
 
 	# Fill background
 	background = pygame.Surface(screen.get_size())
@@ -119,18 +176,28 @@ def main():
 			if event.type == pygame.QUIT:
 				gameExit = True
 			elif event.type == KEYDOWN:
+				x_delta = 0;
+				y_delta = 0;
 				if event.key == pygame.K_RIGHT:
-					paddle.moveright()
+					helmet.moveright()
 				if event.key == pygame.K_LEFT:
-					paddle.moveleft()
+					helmet.moveleft()
+				if event.key == pygame.K_DOWN:
+					helmet.moveup()
+				if event.key == pygame.K_UP:
+					helmet.movedown()
 			elif event.type == KEYUP:
 				if event.key == K_RIGHT or event.key == K_LEFT:
-					paddle.movepos = [0,0]
-					paddle.state = "still"
+					helmet.movepos = [0,0]
+					helmet.state = "still"
 
 		screen.blit(background, helmet.rect, helmet.rect)
+		screen.blit(background, wall.rect, wall.rect)
+		screen.blit(background, ghost.rect, ghost.rect)
 		helmetsprite.update()
+		ghostsprite.update()
 		helmetsprite.draw(screen)
+		ghostsprite.draw(screen)
 		pygame.display.flip()
 	pygame.quit()
 	quit()	
