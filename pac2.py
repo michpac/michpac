@@ -6,7 +6,7 @@ import os
 import getopt
 from pygame.locals import *
 from socket import *
-
+##
 White = (255,255,255)
 Black = (0,0,0)
 Red = (255, 0, 0)
