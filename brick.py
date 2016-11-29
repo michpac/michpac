@@ -15,16 +15,19 @@ Blue = (0, 0, 255)
 Football_Green = (50, 180, 50)
 
 
+
+
 class Football(pygame.sprite.Sprite):
 	"""This is going to be the football that bounces back and fourth"""
 	def __init__(self, vector):
 		pygame.sprite.Sprite.__init__(self)
 		self.image = pygame.image.load('data/football.bmp')
-		self.rect = self.image.get_rect()		
+		self.rect = self.image.get_rect()
 		screen = pygame.display.get_surface()
 		self.area = screen.get_rect()
 		self.vector = vector
 		self.hit = 0
+		self.lives = 3
 
 	def update(self):
 		newpos = self.calcnewpos(self.rect,self.vector)
@@ -42,8 +45,9 @@ class Football(pygame.sprite.Sprite):
 				angle = math.pi - angle
 			if tr == True and tl == True:
 				angle = -angle
-			#if br == True and bl == True: 
-				#this will be a loss of life
+			if br == True and bl == True: 
+				self.lives -= 1
+				print (self.lives)
 
 		else:
 			if self.rect.colliderect(paddle.rect) == 1 and not self.hit:
@@ -59,7 +63,7 @@ class Football(pygame.sprite.Sprite):
 		return rect.move(dx,dy)
 
 class Paddle(pygame.sprite.Sprite):
-	"""Paddle on the bottom"""
+	"""Paddle (Michigan Football Helmets) on the bottom"""
 
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
@@ -73,7 +77,7 @@ class Paddle(pygame.sprite.Sprite):
 
 	def reinit(self):
 		self.state = "still"
-		self.movepos = [0,0]
+		self.movepos = [600, 500]
 
 	def update(self):
 		newpos = self.rect.move(self.movepos)
@@ -100,6 +104,11 @@ def main():
 	background = background.convert()
 	background.fill((50, 180, 50))
 
+	#music
+	pygame.mixer.music.load('data/victors.mp3')
+	pygame.mixer.music.play(-1, 0.0)        
+
+
 	font = pygame.font.Font(None, 36)
 	score = 0
 	score_text = font.render("Score: " + str(score), 1, Red)
@@ -107,16 +116,16 @@ def main():
 	textpos.bottomleft = background.get_rect().bottomleft
 	background.blit(score_text, textpos)
 
-	lives = 3
-	lives_text = font.render("Lives: " + str(lives), 1, Red)
+	
+
+	font = pygame.font.Font(None, 80)
+	lives_text = font.render("MICHIGAN BrickBreaker", 1, Blue)
 	textpos = lives_text.get_rect()
-	textpos.bottomright = background.get_rect().bottomright
+	textpos.midbottom = background.get_rect().midbottom
 	background.blit(lives_text, textpos)
 
 	# Initialise players
 	global paddle
-	global football
-	football = Football()
 	paddle = Paddle()
 
 	# Initialise ball
@@ -128,6 +137,11 @@ def main():
 	paddlesprite = pygame.sprite.RenderPlain(paddle)
 	footballsprite = pygame.sprite.RenderPlain(football)
 
+	# lives = 3
+	lives_text = font.render("Lives: " + str(football.lives), 1, Red)
+	textpos = lives_text.get_rect()
+	textpos.bottomright = background.get_rect().bottomright
+	background.blit(lives_text, textpos)
 	# Blit everything to the screen
 	screen.blit(background, (0, 0))
 	pygame.display.flip()
@@ -153,6 +167,15 @@ def main():
 				if event.key == K_RIGHT or event.key == K_LEFT:
 					paddle.movepos = [0,0]
 					paddle.state = "still"
+
+			# lives = 3
+		lives_text = font.render("Lives: " + str(football.lives), 1, Red)
+		textpos = lives_text.get_rect()
+		textpos.bottomright = background.get_rect().bottomright
+		background.blit(lives_text, textpos)
+		# Blit everything to the screen
+		#screen.blit(background, (0, 0))
+		#pygame.display.flip()
 
 		screen.blit(background, football.rect, football.rect)
 		screen.blit(background, paddle.rect, paddle.rect)
