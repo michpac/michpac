@@ -31,7 +31,7 @@ class Football(pygame.sprite.Sprite):
 		newpos = self.calcnewpos(self.rect,self.vector)
 		self.rect = newpos
 		(angle,z) = self.vector
-
+		score = 0
 		#set rules for when the Football hits the walls/paddle
 		if not self.area.contains(newpos): 
 			tl = not self.area.collidepoint(newpos.topleft)
@@ -47,15 +47,18 @@ class Football(pygame.sprite.Sprite):
 			if br == True and bl == True: 
 				self.lives -= 1
 				print (self.lives)
-
+		
 		else:
-			if self.rect.colliderect(paddle.rect) == 1 and not self.hit:
+			if self.rect.colliderect(paddle.rect) == True and not self.hit:
 				angle = -angle
 				self.hit = not self.hit
+				#score +=1
 			elif self.hit:
 				self.hit = not self.hit
+				#score +=1
 		self.vector = (angle,z)
 
+			
 	def calcnewpos(self,rect,vector):
 		(angle,z) = vector
 		(dx,dy) = (z*math.cos(angle),z*math.sin(angle))
@@ -93,6 +96,9 @@ class Paddle(pygame.sprite.Sprite):
 		self.movepos[0] = self.movepos[0] + (self.speed)
 		self.state = "move right"
 
+	def hit(self, target):
+		return self.rect.colliderect(target)
+
 def main():
 	# Initialise screen
 	pygame.init()
@@ -105,8 +111,8 @@ def main():
 	background.fill((50, 180, 50))
 
 	#music
-	#pygame.mixer.music.load('data/victors.mp3')
-	#pygame.mixer.music.play(-1, 0.0)        
+	sound = pygame.mixer.Sound('victors.wav')
+	
 
 	#fonts on bottom
 	font = pygame.font.Font(None, 36)
@@ -141,16 +147,12 @@ def main():
 	textpos = lives_text.get_rect()
 	textpos.bottomright = background.get_rect().bottomright
 	background.blit(lives_text, textpos)
-	
+
 	# Blit everything to the screen
 	screen.blit(background, (0, 0))
 	pygame.display.flip()
 
-	# lives = 3
-	lives_text = font.render("Lives: " + str(football.lives), 1, Red)
-	textpos = lives_text.get_rect()
-	textpos.bottomright = background.get_rect().bottomright
-	background.blit(lives_text, textpos)
+	hits= 0
 
 	# Initialise clock
 	clock = pygame.time.Clock()
@@ -158,23 +160,31 @@ def main():
 	# Event loop
 	gameExit = False
 	while not gameExit:
+		sound.play()
 		# Runs frames at 60 frames per second
 		clock.tick(60)
-
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
-				gameExit = True
+				gameExit = True     		
 			elif event.type == KEYDOWN:
 				if event.key == pygame.K_RIGHT:
 					paddle.moveright()
 				if event.key == pygame.K_LEFT:
 					paddle.moveleft()
+
 			elif event.type == KEYUP:
 				if event.key == K_RIGHT or event.key == K_LEFT:
 					paddle.movepos = [0,0]
 					paddle.state = "still"
-		#if lives == 0:
-			#gameExit = True
+
+			if paddle.hit(football):
+				hits +=1
+
+		score_text = font.render("Score: " + str(hits), 1, Red)
+		textpos = score_text.get_rect()
+		textpos.bottomleft = background.get_rect().bottomleft
+		background.blit(score_text, textpos)
+
 
 		
 		# Blit everything to the screen
