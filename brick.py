@@ -14,6 +14,7 @@ Green = (0, 255, 0)
 Blue = (0, 0, 255)
 Football_Green = (50, 180, 50)
 
+
 class Football(pygame.sprite.Sprite):
 	"""This is going to be the football that bounces back and fourth"""
 	def __init__(self, vector):
@@ -53,6 +54,8 @@ class Football(pygame.sprite.Sprite):
 			elif self.hit:
 				self.hit = not self.hit
 		self.vector = (angle,z)
+
+	
 
 
 	def calcnewpos(self,rect,vector):
@@ -111,6 +114,8 @@ class Bricks(pygame.sprite.Sprite):
 	def destroy(self):
 		self.kill()
 
+
+
 		
 
 # Initialise screen
@@ -136,25 +141,31 @@ football = Football((0.47, speed))
 #Initialize Bricks
 schools = ['bricks/Alabama.bmp', 'bricks/Arizona.bmp', 'bricks/Duke.bmp', 'bricks/Florida.bmp', 'bricks/FSU.bmp', 'bricks/Georgetown.bmp', 'bricks/Illinois.bmp', 'bricks/Iowa.bmp','bricks/IU.bmp', 'bricks/Louisville.bmp', 'bricks/LSU.bmp', 'bricks/Maryland.bmp', 'bricks/Miami.bmp', 'bricks/Minnesota.bmp', 'bricks/MSU.bmp', 'bricks/ND.bmp','bricks/Nebraska.bmp', 'bricks/Northwestern.bmp', 'bricks/Oregon.bmp','bricks/OSU.bmp', 'bricks/OU.bmp', 'bricks/PSU.bmp','bricks/Purdue.bmp', 'bricks/Rutgers.bmp', 'bricks/Syracuse.bmp', 'bricks/Texas.bmp', 'bricks/UCLA.bmp', 'bricks/USC.bmp', 'bricks/Vandy.bmp','bricks/Wisconsin.bmp', 'bricks/Penn.bmp', 'bricks/Tulane.bmp', 'bricks/Virginia.bmp', 'bricks/CU.bmp', 'bricks/Kentucky.bmp']
 
+
 brick1sprite =pygame.sprite.RenderPlain()
+brick2sprite =pygame.sprite.RenderPlain()
+brick3sprite =pygame.sprite.RenderPlain()
+brick4sprite =pygame.sprite.RenderPlain()
+brick5sprite =pygame.sprite.RenderPlain()
+brick6sprite =pygame.sprite.RenderPlain()
 for i in range(10):
 	brick = Bricks(schools[i], (i+1)*100, 100)
 	brick1sprite.add(brick)
 for i in range(10):
 	brick = Bricks(schools[i+10], (i+1)*100, 125)
-	brick1sprite.add(brick)
+	brick2sprite.add(brick)
 for i in range(10):
 	brick = Bricks(schools[i+20], (i+1)*100, 150)
-	brick1sprite.add(brick)
+	brick3sprite.add(brick)
 for i in range(10):
 	brick = Bricks(schools[i+25], (i+1)*100, 175)
-	brick1sprite.add(brick)
+	brick4sprite.add(brick)
 for i in range(10):
 	brick = Bricks(schools[i+7], (i+1)*100, 200)
-	brick1sprite.add(brick)
+	brick5sprite.add(brick)
 for i in range(10):
 	brick = Bricks(schools[i+14], (i+1)*100, 225)
-	brick1sprite.add(brick)
+	brick6sprite.add(brick)
 
 
 
@@ -215,21 +226,55 @@ while not gameExit:
 				paddle.movepos = [0,0]
 				paddle.state = "still"
 
+	if pygame.sprite.spritecollideany(football, brick6sprite):
+		for brick in brick6sprite:
+			brick.kill()
+			football.score +=1
+	if pygame.sprite.spritecollideany(football, brick5sprite):
+		for brick in brick5sprite:
+			brick.kill()
+			football.score +=1
+	if pygame.sprite.spritecollideany(football, brick4sprite):
+		for brick in brick4sprite:
+			brick.kill()
+			football.score +=1
+	if pygame.sprite.spritecollideany(football, brick3sprite):
+		for brick in brick3sprite:
+			brick.kill()
+			football.score +=1
+	if pygame.sprite.spritecollideany(football, brick2sprite):
+		for brick in brick2sprite:
+			brick.kill()
+			football.score +=1	
+	if pygame.sprite.spritecollideany(football, brick1sprite):
+		for brick in brick1sprite:
+			brick.kill()
+			football.score +=1
+
 
 	screen.blit(background, football.rect, football.rect)
 	screen.blit(background, paddle.rect, paddle.rect)
 	footballsprite.update()
 	paddlesprite.update()
 	brick1sprite.update()
+	brick2sprite.update()
+	brick3sprite.update()
+	brick4sprite.update()
+	brick5sprite.update()
+	brick6sprite.update()
 	footballsprite.draw(screen)
 	paddlesprite.draw(screen)
 	brick1sprite.draw(screen)
+	brick2sprite.draw(screen)
+	brick3sprite.draw(screen)
+	brick4sprite.draw(screen)
+	brick5sprite.draw(screen)
+	brick6sprite.draw(screen)
 	pygame.display.flip()
-print (football.score)
+print ("Game over!!! You scored: " + str(football.score))
+print (football.lives)
 pygame.quit()
 quit()	
 
 
 if __name__ == '__main__': main()
-
-
