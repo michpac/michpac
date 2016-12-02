@@ -14,7 +14,6 @@ Green = (0, 255, 0)
 Blue = (0, 0, 255)
 Football_Green = (50, 180, 50)
 
-
 class Football(pygame.sprite.Sprite):
 	"""This is going to be the football that bounces back and fourth"""
 	def __init__(self, vector):
@@ -25,6 +24,7 @@ class Football(pygame.sprite.Sprite):
 		self.area = screen.get_rect()
 		self.vector = vector
 		self.lives = 3
+		self.score = 0
 
 	def update(self):
 		newpos = self.calcnewpos(self.rect,self.vector)
@@ -43,8 +43,8 @@ class Football(pygame.sprite.Sprite):
 			if tr == True and tl == True:
 				angle = -angle
 			if br == True and bl == True: 
+				angle = -angle
 				self.lives -= 1
-				return self.lives
 
 		else:
 			if self.rect.colliderect(paddle.rect) == True and not self.hit:
@@ -53,6 +53,7 @@ class Football(pygame.sprite.Sprite):
 			elif self.hit:
 				self.hit = not self.hit
 		self.vector = (angle,z)
+
 
 	def calcnewpos(self,rect,vector):
 		(angle,z) = vector
@@ -74,7 +75,7 @@ class Paddle(pygame.sprite.Sprite):
 
 	def reinit(self):
 		self.state = "still"
-		self.movepos = [600, 475]
+		self.movepos = [500, 475]
 
 	def update(self):
 		newpos = self.rect.move(self.movepos)
@@ -93,35 +94,35 @@ class Paddle(pygame.sprite.Sprite):
 
 class Bricks(pygame.sprite.Sprite):
 	"""Bricks to be hit by football"""
-	def __init__(self, image, groups):
-
+	
+	#def __init__(self, image, groups):
+	def __init__(self, image, xpos, ypos):
 		pygame.sprite.Sprite.__init__(self)
-		self.image = pygame.image.load('data/OSU.bmp')
-		self.image = pygame.Surface([brick_width, brick_height])
+		self.image = pygame.image.load(image)
 		self.rect = self.image.get_rect()
-		#self.rect.center = (50, 50)
-		self.rect.x = 50
-		self.rect.y = 50
+		self.rect.center = (xpos, ypos)
+		#self.groups = [groups]
+		#self.score = 0
 		#self.add(groups)
 		#self.score = 0
+	def update(self):
+		self.rect.center = self.rect.center
 
-	'''def update(self):
-		if self.rect.colliderect(football.rect):
-			self.kill()
-			self.score +=1
-			return score'''
+	def destroy(self):
+		self.kill()
+
+		
 
 # Initialise screen
 pygame.init()
-screen = pygame.display.set_mode((1200, 600))
+screen = pygame.display.set_mode((1100, 600))
 pygame.display.set_caption('Michigan Brick Breaker')
-
 
 # Fill background
 background = pygame.Surface(screen.get_size())
 background = background.convert()
-background = pygame.image.load('data/stadium.bmp')
-background = pygame.transform.scale(background, (1200, 600))
+background = pygame.image.load('data/stadium.bmp').convert_alpha()
+background = pygame.transform.scale(background, (1100, 600))
 
 # Initialize players
 global paddle
@@ -133,28 +134,40 @@ rand = ((0.1 * (random.randint(5,8))))
 football = Football((0.47, speed))
 
 #Initialize Bricks
-bricks = pygame.sprite.Group()
-schools = ['data/OSU.bmp', 'data/MSU.bmp', 'data/ND.bmp',
- 'data/Illinois.bmp','data/IU.bmp', 'data/Alabama.bmp', 
- 'data/Florida.bmp', 'data/Iowa.bmp','data/Maryland.bmp', 
- 'data/Miami.bmp','data/Northwestern.bmp', 'data/Texas.bmp', 
- 'data/Wisconsin.bmp', 'data/UCLA.bmp', 'data/USC.bmp', 
- 'data/LSU.bmp', 'data/Minnesota.bmp']
-for item in schools:
-	Bricks(item, bricks)
+schools = ['bricks/Alabama.bmp', 'bricks/Arizona.bmp', 'bricks/Duke.bmp', 'bricks/Florida.bmp', 'bricks/FSU.bmp', 'bricks/Georgetown.bmp', 'bricks/Illinois.bmp', 'bricks/Iowa.bmp','bricks/IU.bmp', 'bricks/Louisville.bmp', 'bricks/LSU.bmp', 'bricks/Maryland.bmp', 'bricks/Miami.bmp', 'bricks/Minnesota.bmp', 'bricks/MSU.bmp', 'bricks/ND.bmp','bricks/Nebraska.bmp', 'bricks/Northwestern.bmp', 'bricks/Oregon.bmp','bricks/OSU.bmp', 'bricks/OU.bmp', 'bricks/PSU.bmp','bricks/Purdue.bmp', 'bricks/Rutgers.bmp', 'bricks/Syracuse.bmp', 'bricks/Texas.bmp', 'bricks/UCLA.bmp', 'bricks/USC.bmp', 'bricks/Vandy.bmp','bricks/Wisconsin.bmp', 'bricks/Penn.bmp', 'bricks/Tulane.bmp', 'bricks/Virginia.bmp', 'bricks/CU.bmp', 'bricks/Kentucky.bmp']
+
+brick1sprite =pygame.sprite.RenderPlain()
+for i in range(10):
+	brick = Bricks(schools[i], (i+1)*100, 100)
+	brick1sprite.add(brick)
+for i in range(10):
+	brick = Bricks(schools[i+10], (i+1)*100, 125)
+	brick1sprite.add(brick)
+for i in range(10):
+	brick = Bricks(schools[i+20], (i+1)*100, 150)
+	brick1sprite.add(brick)
+for i in range(10):
+	brick = Bricks(schools[i+25], (i+1)*100, 175)
+	brick1sprite.add(brick)
+for i in range(10):
+	brick = Bricks(schools[i+7], (i+1)*100, 200)
+	brick1sprite.add(brick)
+for i in range(10):
+	brick = Bricks(schools[i+14], (i+1)*100, 225)
+	brick1sprite.add(brick)
+
+
 
 # Initialise sprites
 paddlesprite = pygame.sprite.RenderPlain(paddle)
 footballsprite = pygame.sprite.RenderPlain(football)
-brickssprite =pygame.sprite.RenderPlain(bricks)
 
 #music
-sound = pygame.mixer.Sound('victors.wav')
+sound = pygame.mixer.Sound('music/victors.wav')
 
 #fonts on bottom
-score = 0
 font = pygame.font.Font(None, 36)
-score_text = font.render("Score: " + str(score), 1, Red)
+score_text = font.render("Score: " + str(football.score), 1, Red)
 textpos = score_text.get_rect()
 textpos.bottomleft = background.get_rect().bottomleft
 background.blit(score_text, textpos)
@@ -165,12 +178,13 @@ textpos = lives_text.get_rect()
 textpos.midbottom = background.get_rect().midbottom
 background.blit(lives_text, textpos)
 
-#lives = 3
+
 font = pygame.font.Font(None, 36)
 lives_text = font.render("Lives: " + str(football.lives), 1, Red)
 textpos = lives_text.get_rect()
 textpos.bottomright = background.get_rect().bottomright
 background.blit(lives_text, textpos)
+
 
 # Blit everything to the screen
 screen.blit(background, (0, 0))
@@ -179,19 +193,7 @@ pygame.display.flip()
 # Initialise clock
 clock = pygame.time.Clock()
 
-#Creating rows
-# b = pygame.sprite.Bricks()
-# y_pos = 10
-# number_blocks = 10
-# brick_width =40
-# brick_height = 40
-# for row in range (0,5):
-# 	for column in range(0, number_blocks):
-# 		dems = Bricks(column * (brick_width * 2) + 1, y_pos)
-# 		b.add(dems)
-# 	y_pos += brick_height +1
-
-
+ 	
 # Event loop
 gameExit = False
 while not gameExit:
@@ -213,20 +215,21 @@ while not gameExit:
 				paddle.movepos = [0,0]
 				paddle.state = "still"
 
+
 	screen.blit(background, football.rect, football.rect)
 	screen.blit(background, paddle.rect, paddle.rect)
-	#screen.blit(background, bricks.rect, bricks.rect)
 	footballsprite.update()
 	paddlesprite.update()
-	#brickssprite.update()
+	brick1sprite.update()
 	footballsprite.draw(screen)
 	paddlesprite.draw(screen)
-	#brickssprite.draw(screen)
+	brick1sprite.draw(screen)
 	pygame.display.flip()
-#print (score)
+print (football.score)
 pygame.quit()
 quit()	
 
 
 if __name__ == '__main__': main()
+
 
