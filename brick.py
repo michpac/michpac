@@ -14,6 +14,7 @@ Green = (0, 255, 0)
 Blue = (0, 0, 255)
 Football_Green = (50, 180, 50)
 
+SpeedVariable = int(input("Enter speed: (1-50, 50 hardest)"))
 
 class Football(pygame.sprite.Sprite):
 	"""This is going to be the football that bounces back and fourth"""
@@ -130,7 +131,7 @@ global paddle
 paddle = Paddle()
 
 # Initialise ball
-speed = 13
+speed = SpeedVariable
 rand = ((0.1 * (random.randint(5,8))))
 football = Football((0.47, speed))
 
